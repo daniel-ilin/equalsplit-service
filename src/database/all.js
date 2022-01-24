@@ -33,23 +33,19 @@ async function getAllData(req, completion) {
 async function userOwnsSession(sessionid, currentuserid) {
   const queryString = "SELECT ownerid FROM session WHERE id = ($1);";
   const response = await db.asyncQuery(queryString, [sessionid])
-  if (response.rows[0].ownerid === currentuserid) {
-    console.log(`DEBUG: user owns session is true`)
+  if (response.rows[0].ownerid === currentuserid) {    
     return true
-  } else {
-    console.log(`DEBUG: user owns session is false`)
-    return false
-  } 
+  } else {    
+    return false  
+  }
 }
 
 async function userOwnsTransaction(transactionid, currentuserid) {
   const queryString = "SELECT ownerid FROM transaction WHERE id = ($1);";
   const response = await db.asyncQuery(queryString, [transactionid])
   if (response.rows[0].ownerid === currentuserid) {
-    console.log(`DEBUG: user owns transaction is true`)
     return true
-  } else {
-    console.log(`DEBUG: user owns transaction is false`)
+  } else {    
     return false
   }
 }
@@ -157,20 +153,18 @@ async function removeUserFromSession(sessionid, userid) {
 
 async function removeAllUserTransactionsFromSessions(sessionid, userid) {
   const queryString = "DELETE FROM Transaction WHERE SessionId = ($1) AND OwnerId = ($2);"
-  const response = await db.asyncQuery(queryString, [sessionid, userid])                  
-  return response
+  await db.asyncQuery(queryString, [sessionid, userid])                  
+  return 
 }
 
 async function isSessionEmpty(sessionid) {
   const queryString = "SELECT COUNT(1) FROM sessionusers WHERE sessionid = ($1);"
-  const response = await db.asyncQuery(queryString, [sessionid])
-  let sessionIsEmpty = true
+  const response = await db.asyncQuery(queryString, [sessionid])  
   if (response.rows[0] !== undefined && response.rows[0].count > 0) {
-    sessionIsEmpty = false
+    return false
   } else {
-    sessionIsEmpty = true
-  }
-  return sessionIsEmpty
+    return  true
+  }  
 }
 
 async function removeSession(sessionid) {

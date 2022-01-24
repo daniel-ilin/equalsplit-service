@@ -53,9 +53,9 @@ router.put("/", checkAuthenticated, async (req, res) => {
   try {
     const sessionid = req.body.sessionid
     const name = req.body.name
-    const userIsOwner = userOwnsSession(sessionid, req.user.rows[0].id)
+    const userIsOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
     if (userIsOwner === false) {
-    res.res.status(400).send({ error: `User does not have right to edit session` })    
+    res.status(400).send({ error: `User does not have right to edit session` })    
     }
     await renameSession(sessionid, name)
     res.status(200).send({ message: `Session renamed` })
@@ -67,17 +67,25 @@ router.put("/", checkAuthenticated, async (req, res) => {
 router.delete("/user", checkAuthenticated, async (req, res) => {
   try {
     const sessionid = req.body.sessionid
-    const userIsOwner = userOwnsSession(sessionid, req.user.rows[0].id)
+    const userIsOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
+    const targetUserIsOwner = await userOwnsSession(sessionid, req.body.userid)
+    console.log(`DEBUG: targetUserIsOwner - ${targetUserIsOwner}`)
     if (userIsOwner === false) {
-    res.res.status(400).send({ error: `User does not have right to edit session` })    
+    res.status(400).send({ error: `User does not have right to edit session` })    
     }
-    await removeUserFromSession(sessionid, req.user.rows[0].id)
+    await removeUserFromSession(sessionid, req.body.userid)
     await removeAllUserTransactionsFromSessions(sessionid, req.body.userid)
-    const sessionEmpty = isSessionEmpty(sessionid)
-    if (sessionEmpty == false) {
-      return
+    let sessionEmpty = await isSessionEmpty(sessionid)
+    if (targetUserIsOwner === true) {
+      sessionEmpty = true
     }
-    await removeSession(sessionid)
+    console.log(`DEBUG: session empty - ${sessionEmpty}`)
+    if (sessionEmpty === false) {
+      res.status(200).send({ message: `Removed user` })
+    } else {
+      await removeSession(sessionid)
+      res.status(200).send({ message: `Removed user and cleaned up session` })
+    }    
   } catch (error) {
     res.status(400).send({ error: `Error: ${error}` })
   }

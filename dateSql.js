@@ -8,6 +8,4 @@ function getTime() {
     return date
 }
 
-module.exports = {
-    currentTime: getTime()
-}
+module.exports = { getTime }

@@ -1,6 +1,6 @@
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect("/successlogin");
+    return res.redirect("/login/success");
   } else {
     return next();
   }

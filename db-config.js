@@ -1,8 +1,6 @@
 // Create the main schema
 
 const db = require("./db/index");
-const bcrypt = require("bcrypt");
-const crypto = require("crypto");
 
 const sqlConfigure =
   "BEGIN TRANSACTION;\
@@ -31,8 +29,7 @@ CREATE TABLE Session (\
 \
 CREATE TABLE SessionUsers (\
     sessionId varchar(255) NOT NULL,\
-    userId varchar(255) NOT NULL,\
-    username varchar(255) NOT NULL\
+    userId varchar(255) NOT NULL\
 );\
 \
 ALTER TABLE Transaction ADD CONSTRAINT PK_Transaction_id PRIMARY KEY (id);\

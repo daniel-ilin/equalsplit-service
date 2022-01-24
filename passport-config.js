@@ -11,11 +11,9 @@ function init(passport, getUserByEmail, getUserById) {
             }
     
             try {
-                if (await bcrypt.compare(password, user.password)) {
-                    console.log("DEBUG: Correct Password")
+                if (await bcrypt.compare(password, user.password)) {                    
                     return done(null, user)
-                } else {
-                    console.log("DEBUG: Wrong Password")
+                } else {                    
                     return done(null, false, {message: "Password incorrect"})
                 }
             } catch(err) {

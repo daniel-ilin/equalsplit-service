@@ -45,6 +45,7 @@ app.use(
   })
 );
 
+
 app.use(bodyParser.json());
 
 app.use(passport.initialize());
@@ -53,7 +54,8 @@ app.use(methodOverride("_method"));
 
 const db = require("./db/index");
 
-const { initDb } = require("./db-config");
+const { initDb } = require("./db/db-config");
+
 initDb();
 
 // ROUTES

@@ -1,6 +1,6 @@
 // Create the main schema
 
-const db = require("./db/index");
+const db = require("./index");
 
 const sqlConfigure =
   "BEGIN TRANSACTION;\

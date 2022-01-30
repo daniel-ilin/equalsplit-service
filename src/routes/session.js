@@ -69,7 +69,6 @@ router.delete("/user", checkAuthenticated, async (req, res) => {
     const sessionid = req.body.sessionid
     const userIsOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
     const targetUserIsOwner = await userOwnsSession(sessionid, req.body.userid)
-    console.log(`DEBUG: targetUserIsOwner - ${targetUserIsOwner}`)
     if (userIsOwner === false) {
     res.status(400).send({ error: `User does not have right to edit session` })    
     }

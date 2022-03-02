@@ -1,11 +1,11 @@
 const express = require('express');
 const { getSessionIdFromCode, doesSessionOwnsUser, addUserToSession, generateSessionCode, addSession, userOwnsSession, deleteSession, renameSession, removeUserFromSession, removeAllUserTransactionsFromSessions, isSessionEmpty, removeSession } = require('../database/all');
-const checkAuthenticated = require('../middleware/checkAuthenticated');
+// const checkAuthenticated = require('../middleware/checkAuthenticated');
 const crypto = require("crypto");
 
 const router = express.Router()
 
-router.post("/join", checkAuthenticated, async (req, res) => {
+router.post("/join", async (req, res) => {
   try {
     const userId = req.user.rows[0].id;
     const code = req.body.sessionCode.toUpperCase();
@@ -22,7 +22,7 @@ router.post("/join", checkAuthenticated, async (req, res) => {
 
 })
 
-router.post("/", checkAuthenticated, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const ownerid = req.user.rows[0].id;
     const sessionid = crypto.randomBytes(16).toString("hex");
@@ -35,7 +35,7 @@ router.post("/", checkAuthenticated, async (req, res) => {
   }
 })
   
-router.delete("/", checkAuthenticated, async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid
     const userIsOwner = userOwnsSession(sessionid, req.user.rows[0].id)

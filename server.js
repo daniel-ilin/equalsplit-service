@@ -23,7 +23,7 @@ if (process.env.NODE_ENV !== "production") {
 initDb();
 
 const initPassport = require("./passport-config");
-const checkAuthenticated = require("./src/middleware/checkAuthenticated");
+// const checkAuthenticated = require("./src/middleware/checkAuthenticated");
 
 initPassport(
   passport,

@@ -2,7 +2,7 @@ const express = require("express");
 const crypto = require("crypto");
 const { getTime } = require("../../dateSql");
 const { addTransaction, userOwnsTransaction, removeTransaction, userOwnsSession, changeTransaction, getSessionForTransaction } = require("../database/all");
-const checkAuthenticated = require("../middleware/checkAuthenticated");
+// const checkAuthenticated = require("../middleware/checkAuthenticated");
 const router = express.Router()
 
 

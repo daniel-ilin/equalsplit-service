@@ -9,6 +9,7 @@ const flash = require("express-flash");
 var cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const session = require("express-session");
+const MemoryStore = require("memorystore")(session);
 
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
@@ -45,13 +46,16 @@ app.set("view-engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 
-const sessionConfig = {  
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,  
-};
-
-app.use(session(sessionConfig));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    store: new MemoryStore({
+      checkPeriod: 86400000, // prune expired entries every 24h
+    }),
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(bodyParser.json());
 

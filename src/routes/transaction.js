@@ -6,7 +6,7 @@ const checkAuthenticated = require("../middleware/checkAuthenticated");
 const router = express.Router()
 
 
-router.post("/", checkAuthenticated, async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const time = getTime()
         const id = crypto.randomBytes(16).toString("hex");    
@@ -17,7 +17,7 @@ router.post("/", checkAuthenticated, async (req, res) => {
     }
 })
 
-router.delete("/", checkAuthenticated, async (req, res) => {
+router.delete("/", async (req, res) => {
     try {
         let userCanEdit = false
         const userIsTransactionOwner = await userOwnsTransaction(req.body.id, req.user.rows[0].id)
@@ -40,7 +40,7 @@ router.delete("/", checkAuthenticated, async (req, res) => {
     }
 })
 
-router.put("/", checkAuthenticated, async (req, res) => {
+router.put("/", async (req, res) => {
     try {
         let userCanEdit = false
         const userIsTransactionOwner = await userOwnsTransaction(req.body.id, req.user.rows[0].id)

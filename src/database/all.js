@@ -8,16 +8,16 @@ const {
   getTransactionsForAllUsersInSessions,
 } = require("./getAllDataFunctions");
 
-async function getAllData(req, completion) {
-  let responseJson = [];
-  const userId = req.user.rows[0].id;
-  try {
-    const sessions = await getSessionsForUser(userId);        
-    if (!sessions || sessions.length == 0) {      
+async function getAllData(req, completion) {        
+  try {                    
+    let responseJson = [];        
+    const userId = req.user.rows[0].id;
+    const sessions = await getSessionsForUser(userId);            
+    if (!sessions || sessions.length == 0) {
       completion(responseJson)
     }
-    const queryString = buildSessionQueryString(sessions);    
-    let response = await db.asyncQuery(queryString);    
+    const queryString = buildSessionQueryString(sessions);
+    let response = await db.asyncQuery(queryString);
     getUsersForEachSession(response.rows, (response) => {
       responseJson = response
       getTransactionsForAllUsersInSessions(responseJson, (response) => {
@@ -26,7 +26,7 @@ async function getAllData(req, completion) {
       })      
     })            
   } catch (error) {
-    throw new Error("Can't get user data");
+    console.log("Error: Can't get user data");
   }
 }
 
@@ -73,7 +73,7 @@ async function addUser(req) {
     if (!response) {
       throw new Error("Can't add user");
     }
-    return id;
+    return {id: id};
   }
 }
 

@@ -49,7 +49,7 @@ router.delete("/", checkAuthenticated, async (req, res) => {
   }  
 })
   
-router.put("/", checkAuthenticated, async (req, res) => {
+router.put("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid
     const name = req.body.name
@@ -64,7 +64,7 @@ router.put("/", checkAuthenticated, async (req, res) => {
   }  
 })
 
-router.delete("/user", checkAuthenticated, async (req, res) => {
+router.delete("/user", async (req, res) => {
   try {
     const sessionid = req.body.sessionid
     const userIsOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
@@ -77,8 +77,7 @@ router.delete("/user", checkAuthenticated, async (req, res) => {
     let sessionEmpty = await isSessionEmpty(sessionid)
     if (targetUserIsOwner === true) {
       sessionEmpty = true
-    }
-    console.log(`DEBUG: session empty - ${sessionEmpty}`)
+    }    
     if (sessionEmpty === false) {
       res.status(200).send({ message: `Removed user` })
     } else {

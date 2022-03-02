@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getUserByEmail, getAllData } = require("../database/all");
-const checkAuthenticated = require("../middleware/checkAuthenticated");
+// const verifyToken = require("../middleware/verifyToken.js");
 
-router.get("/email", checkAuthenticated, async (req, res) => {
+router.get("/email", async (req, res) => {
   try {
     const userFromEmail = await getUserByEmail(req.body.email);
     res.status(200).send(userFromEmail);
@@ -12,9 +12,9 @@ router.get("/email", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/", checkAuthenticated, async (req, res) => {
-  try {
-    getAllData(req, (response)=> {
+router.post("/", async (req, res) => {
+  try {    
+    getAllData(req, (response)=> {      
       res.status(200).send(response)
     })    
   } catch (error) {

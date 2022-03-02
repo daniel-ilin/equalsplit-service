@@ -2,8 +2,9 @@
 
 const db = require("./index");
 
+
 const sqlConfigure =
-  "BEGIN TRANSACTION;\
+  'BEGIN TRANSACTION;\
 CREATE TABLE Transaction (\
     OwnerId varchar(255) NOT NULL,\
     Date date,\
@@ -48,14 +49,14 @@ ALTER TABLE SessionUsers ADD CONSTRAINT FK_SessionUsers_sessionid FOREIGN KEY (S
 \
 ALTER TABLE SessionUsers ADD CONSTRAINT FK_SessionUsers_Ownerid FOREIGN KEY (userID) REFERENCES Users (id) ON DELETE CASCADE ON UPDATE CASCADE;\
 \
-END;";
+END;';
 
-function initDb() {
+async function initDb() {
   try {
-    db.query(sqlConfigure, (err) => {
+    await db.asyncQuery(sqlConfigure, (err) => {
       if (err) {
         console.log("Could not create SQL tables,", err);
-      } else {
+      } else {        
         console.log("Created SQL tables");
       }
     });

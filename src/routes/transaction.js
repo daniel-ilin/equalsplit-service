@@ -19,13 +19,13 @@ router.post("/", async (req, res) => {
 
 router.delete("/", async (req, res) => {
     try {
-        let userCanEdit = false
-        const userIsTransactionOwner = await userOwnsTransaction(req.body.id, req.user.rows[0].id)
+        let userCanEdit = false        
+        const userIsTransactionOwner = await userOwnsTransaction(req.body.id, req.body.client_id)
         if (userIsTransactionOwner === true) {
             userCanEdit = false
         }
         const sessionid = await getSessionForTransaction(req.body.id)
-        const userIsSessionOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
+        const userIsSessionOwner = await userOwnsSession(sessionid, req.body.client_id)
         if (userIsSessionOwner === true) {
             userCanEdit = true
         } 
@@ -43,12 +43,12 @@ router.delete("/", async (req, res) => {
 router.put("/", async (req, res) => {
     try {
         let userCanEdit = false
-        const userIsTransactionOwner = await userOwnsTransaction(req.body.id, req.user.rows[0].id)
+        const userIsTransactionOwner = await userOwnsTransaction(req.body.id, req.body.client_id)
         if (userIsTransactionOwner === true) {
             userCanEdit = true
         }
         const sessionid = await getSessionForTransaction(req.body.id)
-        const userIsSessionOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
+        const userIsSessionOwner = await userOwnsSession(sessionid, req.body.client_id)
         if (userIsSessionOwner === true) {
             userCanEdit = true
         }

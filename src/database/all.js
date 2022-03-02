@@ -12,17 +12,20 @@ async function getAllData(req, completion) {
   try {                    
     let responseJson = [];        
     const userId = req.user.rows[0].id;
+    let activeUser = {name: req.user.rows[0].name, email: req.user.rows[0].email, id: req.user.rows[0].id}
     const sessions = await getSessionsForUser(userId);            
     if (!sessions || sessions.length == 0) {
-      completion(responseJson)
+      let finalResponse = {activeUser, sessions: responseJson}            
+      completion(finalResponse)
     }
     const queryString = buildSessionQueryString(sessions);
     let response = await db.asyncQuery(queryString);
     getUsersForEachSession(response.rows, (response) => {
       responseJson = response
       getTransactionsForAllUsersInSessions(responseJson, (response) => {
-        responseJson = response        
-        completion(responseJson)
+        responseJson = response    
+        let finalResponse = {activeUser, sessions: responseJson}            
+        completion(finalResponse)
       })      
     })            
   } catch (error) {
@@ -32,7 +35,7 @@ async function getAllData(req, completion) {
 
 async function userOwnsSession(sessionid, currentuserid) {
   const queryString = "SELECT ownerid FROM session WHERE id = ($1);";
-  const response = await db.asyncQuery(queryString, [sessionid])
+  const response = await db.asyncQuery(queryString, [sessionid])  
   if (response.rows[0].ownerid === currentuserid) {    
     return true
   } else {    

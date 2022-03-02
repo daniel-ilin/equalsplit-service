@@ -14,13 +14,11 @@ router.get("/success", checkAuthenticated, (req, res) => {
   db.query(
       "SELECT id, name FROM users WHERE id = ($1);",
       [req.user.rows[0].id],
-      (err, result) => {
+      (err) => {
         if (err) {
           console.log(err);
-        } else {
-          let user = result.rows[0]
-          user.token = token
-          res.status(200).json(user);
+        } else {          
+          res.status(200).json({token: token});
         }
       }
     );

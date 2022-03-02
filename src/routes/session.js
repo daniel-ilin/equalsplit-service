@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
 router.delete("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid
-    const userIsOwner = userOwnsSession(sessionid, req.user.rows[0].id)
+    const userIsOwner = userOwnsSession(sessionid, req.body.client_id)
     if (userIsOwner === false) {
     res.status(400).send({ error: `User does not have right to edit session` })    
     }
@@ -53,7 +53,7 @@ router.put("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid
     const name = req.body.name
-    const userIsOwner = await userOwnsSession(sessionid, req.user.rows[0].id)
+    const userIsOwner = await userOwnsSession(sessionid, req.body.client_id)
     if (userIsOwner === false) {
     res.status(400).send({ error: `User does not have right to edit session` })    
     }

@@ -1,5 +1,6 @@
 const db = require("../../db");
 const bcrypt = require("bcrypt");
+
 const crypto = require("crypto");
 const {
   getSessionsForUser,
@@ -9,10 +10,13 @@ const {
 } = require("./getAllDataFunctions");
 
 async function getAllData(req, completion) {        
-  try {                    
+                  
     let responseJson = [];        
-    const userId = req.user.rows[0].id;
-    let activeUser = {name: req.user.rows[0].name, email: req.user.rows[0].email, id: req.user.rows[0].id}
+    const userId = req.body.userid;
+    const email = req.body.email;
+
+    // console.log(`getAllData - userId = ${userId}`)
+    let activeUser = await getUserByEmail(email)
     const sessions = await getSessionsForUser(userId);            
     if (!sessions || sessions.length == 0) {
       let finalResponse = {activeUser, sessions: responseJson}            
@@ -27,10 +31,7 @@ async function getAllData(req, completion) {
         let finalResponse = {activeUser, sessions: responseJson}            
         completion(finalResponse)
       })      
-    })            
-  } catch (error) {
-    console.log("Error: Can't get user data");
-  }
+    })              
 }
 
 async function userOwnsSession(sessionid, currentuserid) {
@@ -65,12 +66,14 @@ async function addUser(req) {
   if (emailIsUsed === true) {
     throw new Error("Email already in use");
   } else {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
     const id = crypto.randomBytes(16).toString("hex");
+    const code = generateUserCode()
 
-    const params = [id, req.body.email, req.body.name, hashedPassword];
+    const params = [id, req.body.email, req.body.name, hashedPassword, code];
     const response = await db.asyncQuery(
-      "INSERT INTO users (id, email, name, password) VALUES ($1, $2, $3, $4) RETURNING *;",
+      "INSERT INTO users (id, email, name, password, code) VALUES ($1, $2, $3, $4, $5) RETURNING *;",
       params
     );
     if (!response) {
@@ -82,7 +85,7 @@ async function addUser(req) {
 
 async function getUserByEmail(email) {
   const userFromEmail = await db.asyncQuery(
-    "SELECT id, name FROM users WHERE email = ($1);",
+    "SELECT id, name, email FROM users WHERE email = ($1);",
     [email]
   );
   if (!userFromEmail.rows[0]) {
@@ -133,6 +136,17 @@ async function renameSession(sessionid, name) {
 
 function generateSessionCode() {
   let chars = "acdefhiklmnoqrstuvwxyz0123456789".split("");
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    let x = Math.floor(Math.random() * chars.length);
+    result += chars[x];
+  }
+  let upperCaseResult = result.toUpperCase();
+  return upperCaseResult;
+}
+
+function generateUserCode() {
+  let chars = "0123456789".split("");
   let result = "";
   for (let i = 0; i < 6; i++) {
     let x = Math.floor(Math.random() * chars.length);
@@ -200,6 +214,25 @@ async function getSessionForTransaction(id) {
   return sessionid.rows[0].sessionid
 }
 
+async function generateNewCodeForUser(email) {
+  const code = generateUserCode()
+  let queryString = "UPDATE Users SET Code = ($1) WHERE email = ($2) RETURNING *;";
+  let user = await db.asyncQuery(queryString, [code, email])
+  return user
+}
+
+async function getCodeForUserEmail(email) {
+  let queryString = "SELECT Code FROM Users WHERE email = ($1);";
+  let code = await db.asyncQuery(queryString, [email])
+  return code.rows[0].code
+}
+
+async function activateUser(code) {  
+  let queryString = "UPDATE Users SET Active = true WHERE Code = ($1) RETURNING *;";    
+  let user = await db.asyncQuery(queryString, [code])  
+  return user
+}
+
 module.exports = {
   getAllData,
   userOwnsSession,
@@ -220,5 +253,8 @@ module.exports = {
   addTransaction,
   removeTransaction,
   changeTransaction,
-  getSessionForTransaction
+  getSessionForTransaction,
+  getCodeForUserEmail,
+  activateUser,
+  generateNewCodeForUser
 };

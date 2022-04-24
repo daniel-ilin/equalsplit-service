@@ -1,0 +1,16 @@
+const isUserActive = require("../database/isUserActive");
+
+async function checkAccountInactive(req, res, next) {
+  try {
+    let userIsActive = await isUserActive(req.body.email)
+    if (userIsActive == false) {
+      return next();
+    } else {
+      res.status(400).send({ error: "User already active" });
+    }
+  } catch (errorMessage) {
+    res.status(400).send({ error: `${errorMessage}` });
+  }
+}
+
+module.exports = checkAccountInactive;

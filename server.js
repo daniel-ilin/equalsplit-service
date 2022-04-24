@@ -8,6 +8,7 @@ const flash = require("express-flash");
 
 var cookieParser = require("cookie-parser");
 app.use(cookieParser());
+
 const session = require("express-session");
 const MemoryStore = require("memorystore")(session);
 
@@ -24,6 +25,9 @@ if (process.env.NODE_ENV !== "production") {
 initDb();
 
 const initPassport = require("./passport-config");
+const { checkAccessToken, checkRefreshToken } = require("./src/middleware/checkToken");
+const checkAccountActive = require("./src/middleware/checkAccountActive");
+const checkAccountInactive = require("./src/middleware/checkAccountInactive");
 // const checkAuthenticated = require("./src/middleware/checkAuthenticated");
 
 initPassport(
@@ -67,12 +71,15 @@ app.use(methodOverride("_method"));
 
 
 // ROUTES
-app.use("/users", passport.authenticate('jwt', { session: false }), require("./src/routes/users"));
-app.use("/register", require("./src/routes/register"));
-app.use("/login", require("./src/routes/login"));
-app.use("/logout", passport.authenticate('jwt', { session: false }), require("./src/routes/logout"));
-app.use("/session", passport.authenticate('jwt', { session: false }), require("./src/routes/session"));
-app.use("/transaction", passport.authenticate('jwt', { session: false }), require("./src/routes/transaction"));
+app.use('/users', [checkAccessToken, checkAccountActive], require("./src/routes/users"));
+app.use('/register', require("./src/routes/register"));
+app.use('/login', require("./src/routes/login"));
+app.use('/logout', [checkRefreshToken], require("./src/routes/logout"));
+app.use('/session', [checkAccessToken, checkAccountActive], require("./src/routes/session"));
+app.use('/transaction', [checkAccessToken, checkAccountActive], require("./src/routes/transaction"));
+
+app.use('/mail', checkAccountInactive, require("./src/routes/mail"));
+app.use('/activateuser', checkAccountInactive, require("./src/routes/activateuser"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

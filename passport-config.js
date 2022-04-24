@@ -37,8 +37,8 @@ function init(passport, getUserByEmail, getUserById) {
   passport.use(
     new JWTstrategy(
       {
-        secretOrKey: process.env.TOKEN_KEY,
-        jwtFromRequest: ExtractJWT.fromBodyField('secret_token'),
+        secretOrKey: process.env.ACCESS_TOKEN_KEY,
+        jwtFromRequest: ExtractJWT.fromHeader('x-auth-token'),
       }, function(token, done) {
         getUserById(token.user_id, (user) => {                                                
             done(null, user)

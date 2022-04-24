@@ -10,7 +10,7 @@ CREATE TABLE Transaction (\
     Date date,\
     id varchar(255) NOT NULL,\
     SessionId varchar(255) NOT NULL,\
-    Description varchar(255),\
+    Description text,\
     Amount bigint\
 );\
 \
@@ -18,7 +18,13 @@ CREATE TABLE Users (\
     Email varchar(255) NOT NULL,\
     id varchar(255) NOT NULL,\
     Name varchar(255) NOT NULL,\
-    Password varchar(255) NOT NULL\
+    Password varchar(255) NOT NULL,\
+    Code varchar(255) NOT NULL,\
+    Active boolean DEFAULT false\
+);\
+\
+CREATE TABLE BadTokens (\
+  token text NOT NULL\
 );\
 \
 CREATE TABLE Session (\
@@ -34,6 +40,8 @@ CREATE TABLE SessionUsers (\
 );\
 \
 ALTER TABLE Transaction ADD CONSTRAINT PK_Transaction_id PRIMARY KEY (id);\
+\
+ALTER TABLE BadTokens ADD CONSTRAINT PK_Token PRIMARY KEY (token);\
 \
 ALTER TABLE Users ADD CONSTRAINT PK_User_id PRIMARY KEY (id);\
 \

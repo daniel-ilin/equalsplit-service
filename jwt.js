@@ -1,12 +1,20 @@
 const jwt = require("jsonwebtoken");
 
-function getSignedJWT(user, email) {
+function getRefreshToken(id, email) {
   return jwt.sign(
-    { user_id: user.id, email }, 
-      process.env.TOKEN_KEY, 
-    { expiresIn: "4380hr"}
+    { user: id, email }, 
+      process.env.REFRESH_TOKEN_KEY, 
+    { expiresIn: '26280hr'}
+    );
+}
+
+function getAccessToken(id, email) {
+  return jwt.sign(
+    { user: id, email }, 
+      process.env.ACCESS_TOKEN_KEY, 
+    { expiresIn: '1hr'}
     );
 }
 
 
-module.exports = { getSignedJWT };
+module.exports = { getRefreshToken, getAccessToken };

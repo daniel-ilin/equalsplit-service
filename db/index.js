@@ -2,10 +2,9 @@ const { Pool } = require("pg");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
+  ssl: process.env.ISLOCAL == false ? {
     rejectUnauthorized: false
-  }  
-  // ssl: false
+  } : false
 });
 
 

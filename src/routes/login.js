@@ -58,8 +58,8 @@ router.get("/", checkAccountActive, checkNotAuthenticated, (req, res) => {
 
 router.post(
   "/",
-  checkNotAuthenticated,
-  checkAccountActive,  
+  checkNotAuthenticated,  
+  checkAccountActive,
   passport.authenticate("local", {
     successRedirect: "/login/success",
     failureRedirect: "/login",

@@ -1,8 +1,8 @@
 const localStategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 
-const JWTstrategy = require("passport-jwt").Strategy;
-const ExtractJWT = require("passport-jwt").ExtractJwt;
+// const JWTstrategy = require("passport-jwt").Strategy;
+// const ExtractJWT = require("passport-jwt").ExtractJwt;
 
 function init(passport, getUserByEmail, getUserById) {
   const authenticateUser = async (email, password, done) => {
@@ -34,18 +34,18 @@ function init(passport, getUserByEmail, getUserById) {
     });
   });
 
-  passport.use(
-    new JWTstrategy(
-      {
-        secretOrKey: process.env.ACCESS_TOKEN_KEY,
-        jwtFromRequest: ExtractJWT.fromHeader('x-auth-token'),
-      }, function(token, done) {
-        getUserById(token.user_id, (user) => {                                                
-            done(null, user)
-          });
-      }
-    )
-  );
+  // passport.use(
+  //   new JWTstrategy(
+  //     {
+  //       secretOrKey: process.env.ACCESS_TOKEN_KEY,
+  //       jwtFromRequest: ExtractJWT.fromHeader('x-auth-token'),
+  //     }, function(token, done) {
+  //       getUserById(token.user_id, (user) => {                                                
+  //           done(null, user)
+  //         });
+  //     }
+  //   )
+  // );
 }
 
 module.exports = init;

@@ -28,7 +28,7 @@ router.post("/join", async (req, res) => {
       res.status(400).send({ error: "User already in the session" });
     } else {
       await addUserToSession(sessionid, userId);
-      res.status(200).send({ sessionid: sessionid, usedid: userId });
+      res.status(200).send({ sessionid: sessionid, userid: userId });
     }
   } catch (error) {
     res.status(400).send({ error: `${error}` });
@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
 router.delete("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid;
-    const userIsOwner = userOwnsSession(sessionid, req.body.usedid);
+    const userIsOwner = userOwnsSession(sessionid, req.body.userid);
     if (userIsOwner === false) {
       res
         .status(400)
@@ -74,8 +74,8 @@ router.delete("/", async (req, res) => {
 router.put("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid;
-    const name = req.body.name;
-    const userIsOwner = await userOwnsSession(sessionid, req.body.usedid);
+    const name = req.body.name;    
+    const userIsOwner = await userOwnsSession(sessionid, req.body.userid);
     if (userIsOwner === false) {
       res
         .status(400)

@@ -78,8 +78,11 @@ app.use('/logout', [checkRefreshToken], require("./src/routes/logout"));
 app.use('/session', [checkAccessToken, checkAccountActive], require("./src/routes/session"));
 app.use('/transaction', [checkAccessToken, checkAccountActive], require("./src/routes/transaction"));
 
-app.use('/mail', checkAccountInactive, require("./src/routes/mail"));
+app.use('/mail', require("./src/routes/mail"));
 app.use('/activateuser', checkAccountInactive, require("./src/routes/activateuser"));
+
+app.use('/passwordreset', require("./src/routes/passwordreset.js"))
+app.use('/success', require("./src/routes/success.js"))
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

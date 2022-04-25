@@ -6,6 +6,7 @@ const { isTokenValid } = require("../database/tokenFunctions");
 const checkAccountActive = require("../middleware/checkAccountActive");
 const checkAuthenticated = require("../middleware/checkAuthenticated");
 const checkNotAuthenticated = require("../middleware/checkNotAuthenticated");
+const { checkRefreshToken } = require("../middleware/checkToken");
 const router = express.Router();
 
 router.get("/success", checkAuthenticated, (req, res) => {
@@ -27,7 +28,7 @@ router.get("/success", checkAuthenticated, (req, res) => {
   }
 });
 
-router.get("/token", checkAccountActive, async (req, res) => {
+router.get("/token", [checkRefreshToken, checkAccountActive], async (req, res) => {
   const refreshToken = req.header("x-auth-token");
 
   if (!refreshToken) {

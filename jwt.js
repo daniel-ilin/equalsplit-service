@@ -16,5 +16,13 @@ function getAccessToken(id, email) {
     );
 }
 
+function getResetPasswordToken(email) {
+  return jwt.sign(
+    { email }, 
+      process.env.PASSWORDRESET_TOKEN_KEY, 
+    { expiresIn: '10m'}
+    );
+}
 
-module.exports = { getRefreshToken, getAccessToken };
+
+module.exports = { getRefreshToken, getAccessToken, getResetPasswordToken };

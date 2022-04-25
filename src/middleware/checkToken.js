@@ -12,7 +12,7 @@ async function checkAccessToken(req, res, next) {
     try {
       const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY);            
       req.body.email = user.email;
-      req.body.userid = user.user;
+      req.body.userid = user.user;      
       return next();
     } catch {
       res.status(401).send({ error: "Invalid access token" });
@@ -39,4 +39,21 @@ async function checkRefreshToken(req, res, next) {
   }
 }
 
-module.exports = {checkAccessToken, checkRefreshToken};
+async function checkPasswordResetToken(req, res, next) {
+  const passwordResetToken = req.params.token;  
+  if (!passwordResetToken) {
+    res.status(401).send({ error: "Invalid password reset token" });
+  } else if ((await isTokenValid(passwordResetToken)) === false) {    
+    res.status(401).send({ error: "Invalid password reset token" });
+  } else {
+    try {
+      const user = jwt.verify(passwordResetToken, process.env.PASSWORDRESET_TOKEN_KEY);
+      req.body.email = user.email;      
+      return next();
+    } catch {      
+      res.status(401).send({ error: "Invalid password reset token" });
+    }
+  }
+}
+
+module.exports = {checkAccessToken, checkRefreshToken, checkPasswordResetToken};

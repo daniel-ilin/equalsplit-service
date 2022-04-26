@@ -23,6 +23,12 @@ CREATE TABLE Users (\
     Active boolean DEFAULT false\
 );\
 \
+CREATE TABLE GoodTokens (\
+  token text NOT NULL,\
+  expDate date NOT NULL,\
+  userid varchar(255) NOT NULL\
+);\
+\
 CREATE TABLE BadTokens (\
   token text NOT NULL\
 );\
@@ -41,11 +47,15 @@ CREATE TABLE SessionUsers (\
 \
 ALTER TABLE Transaction ADD CONSTRAINT PK_Transaction_id PRIMARY KEY (id);\
 \
-ALTER TABLE BadTokens ADD CONSTRAINT PK_Token PRIMARY KEY (token);\
+ALTER TABLE BadTokens ADD CONSTRAINT PK_BadToken PRIMARY KEY (token);\
+\
+ALTER TABLE GoodTokens ADD CONSTRAINT PK_GoodToken PRIMARY KEY (token);\
 \
 ALTER TABLE Users ADD CONSTRAINT PK_User_id PRIMARY KEY (id);\
 \
 ALTER TABLE Session ADD CONSTRAINT PK_Session_id PRIMARY KEY (id);\
+\
+ALTER TABLE GoodTokens ADD CONSTRAINT FK_Userid FOREIGN KEY (userId) REFERENCES Users (id) ON DELETE CASCADE ON UPDATE CASCADE;\
 \
 ALTER TABLE Session ADD CONSTRAINT FK_Session_Ownerid FOREIGN KEY (OwnerId) REFERENCES Users (id) ON DELETE CASCADE ON UPDATE CASCADE;\
 \

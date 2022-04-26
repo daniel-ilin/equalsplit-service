@@ -4,7 +4,7 @@ function getRefreshToken(id, email) {
   return jwt.sign(
     { user: id, email }, 
       process.env.REFRESH_TOKEN_KEY, 
-    { expiresIn: '26280hr'}
+    { expiresIn: '26298hr'}
     );
 }
 
@@ -12,15 +12,15 @@ function getAccessToken(id, email) {
   return jwt.sign(
     { user: id, email }, 
       process.env.ACCESS_TOKEN_KEY, 
-    { expiresIn: '1hr'}
+    { expiresIn: '10s'}
     );
 }
 
-function getResetPasswordToken(email) {
+function getResetPasswordToken(id, email) {
   return jwt.sign(
-    { email }, 
+    { user: id, email }, 
       process.env.PASSWORDRESET_TOKEN_KEY, 
-    { expiresIn: '10m'}
+    { expiresIn: '15m'}
     );
 }
 

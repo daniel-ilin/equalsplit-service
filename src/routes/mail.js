@@ -39,15 +39,15 @@ router.post("/resetpassword", async (req, res) => {
   try {
     const email = req.body.email;
 
-    await getUserByEmail(email);
+    const user = await getUserByEmail(email);
 
-    const link = getPasswordResetLink(email);
+    const link = getPasswordResetLink(user.id, email);
 
     let message = `Hello!\n
 \n
 Here is your password reset link: \n
 ${link} \n
-If you didn't request password reset, please ignore this email. \n
+If you don't use it, it will expire in 15 minutes. If you didn't request password reset, please ignore this email. \n
 \n
 Best, \n
 EqualSplit`;

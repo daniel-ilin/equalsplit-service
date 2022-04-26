@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { invalidateToken } = require("../database/tokenFunctions");
+const { invalidateAllUserTokens, invalidateResetPasswordToken } = require("../database/tokenFunctions");
 const { checkPasswordResetToken } = require("../middleware/checkToken");
 const { changePassword } = require("../database/changePassword");
 const router = express.Router();
@@ -29,8 +29,10 @@ router.post('/change/:token', checkPasswordResetToken, cors(corsOptions), async 
     const token = req.params.token
     const newPassword = req.body.password
     const email = req.body.email
+    const userid = req.body.userid
     await changePassword(email, newPassword)    
-    await invalidateToken(token)        
+    await invalidateResetPasswordToken(token)        
+    await invalidateAllUserTokens(userid)
     return res.status(200).send({ message: "Password Successfuly changed"})
 })
 

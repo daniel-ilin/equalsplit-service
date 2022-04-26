@@ -12,7 +12,7 @@ function getAccessToken(id, email) {
   return jwt.sign(
     { user: id, email }, 
       process.env.ACCESS_TOKEN_KEY, 
-    { expiresIn: '10s'}
+    { expiresIn: '60m'}
     );
 }
 

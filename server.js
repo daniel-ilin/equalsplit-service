@@ -84,5 +84,7 @@ app.use('/activateuser', checkAccountInactive, require("./src/routes/activateuse
 app.use('/passwordreset', require("./src/routes/passwordreset.js"))
 app.use('/success', require("./src/routes/success.js"))
 
+app.use('/checklogin', require("./src/routes/checklogin.js"))
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

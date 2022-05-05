@@ -233,8 +233,21 @@ async function activateUser(code) {
   return user
 }
 
+async function changeUserName(userid, newname) {
+  let queryString = "UPDATE Users SET name = ($1) WHERE id = ($2) RETURNING *;";    
+  let user = await db.asyncQuery(queryString, [newname, userid])  
+  return user
+}
+
+async function deleteUser(userid) {
+  let queryString = "DELETE FROM users WHERE id = ($1);";
+  let user = await db.asyncQuery(queryString, [userid])  
+  return user
+}
+
 module.exports = {
   getAllData,
+  deleteUser,
   userOwnsSession,
   userOwnsTransaction,
   addUser,
@@ -256,5 +269,6 @@ module.exports = {
   getSessionForTransaction,
   getCodeForUserEmail,
   activateUser,
-  generateNewCodeForUser
+  generateNewCodeForUser,
+  changeUserName
 };

@@ -94,12 +94,8 @@ router.delete("/user", async (req, res) => {
     const sessionid = req.body.sessionid;
     const userIsOwner = await userOwnsSession(sessionid, req.body.userid);
     const targetUserIsOwner = await userOwnsSession(sessionid, req.body.targetid);
-    if (userIsOwner === false) {
-      res
-        .status(400)
-        .send({ error: `User does not have right to edit session` });
-      return;
-    } else {
+    
+    if (userIsOwner === true || req.body.targetid == req.body.userid) {
       await removeUserFromSession(sessionid, req.body.targetid);
       await removeAllUserTransactionsFromSessions(sessionid, req.body.targetid);
       let sessionEmpty = await isSessionEmpty(sessionid);
@@ -114,7 +110,13 @@ router.delete("/user", async (req, res) => {
           .status(200)
           .send({ message: `Removed user and cleaned up session` });
       }
-    }
+    } else {
+      res
+        .status(400)
+        .send({ error: `User does not have right to edit session` });
+      return;
+    }    
+
   } catch (error) {
     res.status(400).send({ error: `Error: ${error}` });
   }

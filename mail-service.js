@@ -1,14 +1,10 @@
 var nodemailer = require("nodemailer");
-var senderMail = 'equalsplitapp@gmail.com'
+var senderMail = "equalsplitapp@gmail.com";
 
 async function sendMail(receiverMail, subject, message, completion) {
-  
-    var transporter = nodemailer.createTransport({
+  var transporter = nodemailer.createTransport({
     service: "gmail",
-    auth: {
-      user: senderMail,
-      pass: process.env.MAIL_PWD,
-    },
+    auth: { user: senderMail, pass: process.env.MAIL_PWD },
   });
 
   var mailOptions = {
@@ -18,14 +14,15 @@ async function sendMail(receiverMail, subject, message, completion) {
     text: message,
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {      
-      throw new Error('Could not send the email :(')
+  transporter.sendMail(mailOptions, async function (error, info) {
+    if (error) {
+      console.log("Could not send email")
+      return
     } else {
       console.log("Email sent: " + info.response);
-      completion()
+      completion();
     }
   });
 }
 
-module.exports = { sendMail }
+module.exports = { sendMail };

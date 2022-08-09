@@ -20,7 +20,7 @@ const router = express.Router();
 
 router.post("/join", async (req, res) => {
   try {
-    const userId = req.body.userid
+    const userId = req.body.userid;
     const code = req.body.sessionCode.toUpperCase();
     const sessionid = await getSessionIdFromCode(code);
     const sessionOwnsUser = await doesSessionOwnsUser(sessionid, userId);
@@ -37,18 +37,16 @@ router.post("/join", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const ownerid = req.body.userid    
+    const ownerid = req.body.userid;
     const sessionid = crypto.randomBytes(16).toString("hex");
     const sessionCode = generateSessionCode();
     await addSession(sessionid, req.body.name, ownerid, sessionCode);
     await addUserToSession(sessionid, ownerid);
-    res
-      .status(200)
-      .send({
-        sessionid: sessionid,
-        ownerid: ownerid,
-        sessionCode: sessionCode,
-      });
+    res.status(200).send({
+      sessionid: sessionid,
+      ownerid: ownerid,
+      sessionCode: sessionCode,
+    });
   } catch (error) {
     res.status(400).send({ error: `${error}` });
   }
@@ -57,7 +55,7 @@ router.post("/", async (req, res) => {
 router.delete("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid;
-    const userIsOwner = userOwnsSession(sessionid, req.body.userid);
+    const userIsOwner = await userOwnsSession(sessionid, req.body.userid);
     if (userIsOwner === false) {
       res
         .status(400)
@@ -74,7 +72,7 @@ router.delete("/", async (req, res) => {
 router.put("/", async (req, res) => {
   try {
     const sessionid = req.body.sessionid;
-    const name = req.body.name;    
+    const name = req.body.name;
     const userIsOwner = await userOwnsSession(sessionid, req.body.userid);
     if (userIsOwner === false) {
       res
@@ -93,8 +91,11 @@ router.delete("/user", async (req, res) => {
   try {
     const sessionid = req.body.sessionid;
     const userIsOwner = await userOwnsSession(sessionid, req.body.userid);
-    const targetUserIsOwner = await userOwnsSession(sessionid, req.body.targetid);
-    
+    const targetUserIsOwner = await userOwnsSession(
+      sessionid,
+      req.body.targetid
+    );
+
     if (userIsOwner === true || req.body.targetid == req.body.userid) {
       await removeUserFromSession(sessionid, req.body.targetid);
       await removeAllUserTransactionsFromSessions(sessionid, req.body.targetid);
@@ -115,8 +116,7 @@ router.delete("/user", async (req, res) => {
         .status(400)
         .send({ error: `User does not have right to edit session` });
       return;
-    }    
-
+    }
   } catch (error) {
     res.status(400).send({ error: `Error: ${error}` });
   }

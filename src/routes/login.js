@@ -24,7 +24,6 @@ router.get("/success", checkAuthenticated, async (req, res) => {
       const accessToken = getAccessToken(userid, email);
       const refreshToken = getRefreshToken(userid, email);
       await saveRefreshToken(refreshToken, userid, getExpirationDate());
-
       res
         .status(200)
         .json({ accessToken: accessToken, refreshToken: refreshToken });
@@ -39,17 +38,17 @@ router.get(
   [checkRefreshToken, checkAccountActive],
   async (req, res) => {
     try {
-    const refreshToken = req.header("x-auth-token");
+      const refreshToken = req.header("x-auth-token");
 
-    if (!refreshToken) {
-      res.status(400).send({ error: "Token not found" });
-      return;
-    }
+      if (!refreshToken) {
+        res.status(400).send({ error: "Token not found" });
+        return;
+      }
 
-    if ((await isTokenValid(refreshToken)) === false) {
-      res.status(401).send({ error: "Invalid refresh token" });
-      return;
-    }
+      if ((await isTokenValid(refreshToken)) === false) {
+        res.status(401).send({ error: "Invalid refresh token" });
+        return;
+      }
       const decrypt = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY);
       const { user, email } = decrypt;
       const accessToken = getAccessToken(user, email);
@@ -73,7 +72,6 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/login/success",
     failureRedirect: "/login",
-    failureFlash: true,
   })
 );
 

@@ -15,8 +15,7 @@ async function sendMail(receiverMail, subject, message, completion) {
   };
 
   transporter.sendMail(mailOptions, async function (error, info) {
-    if (error) {
-      console.log("Could not send email")
+    if (error) {      
       return
     } else {
       console.log("Email sent: " + info.response);

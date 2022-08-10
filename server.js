@@ -9,8 +9,8 @@ var cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 const cors = require("cors");
-var corsOptions = {
-  origin: "https://equalsplit.herokuapp.com/",
+var corsOptions = {  
+  origin: ["http://localhost:3001", "https://equalsplit.herokuapp.com"],
   optionsSuccessStatus: 200, // For legacy browser support
   credentials: true,
 };

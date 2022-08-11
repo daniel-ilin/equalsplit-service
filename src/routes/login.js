@@ -18,11 +18,17 @@ router.get("/success", checkAuthenticated, async (req, res) => {
     const email = req.user.rows[0].email;
     const userid = req.user.rows[0].id;
 
+    console.log("Success achieved!");
+    console.log(`Yout email: ${email}`);
+    console.log(`Yout id: ${userid}`);
+
     if (!userid || !email) {
       res.status(400).send({ error: "Could not find the user" });
     } else {
       const accessToken = getAccessToken(userid, email);
       const refreshToken = getRefreshToken(userid, email);
+      console.log(`Yout accessToken: ${accessToken}`);
+      console.log(`Yout refreshToken: ${refreshToken}`);
       await saveRefreshToken(refreshToken, userid, getExpirationDate());
       res
         .status(200)

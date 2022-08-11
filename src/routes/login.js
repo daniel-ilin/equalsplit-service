@@ -68,6 +68,7 @@ router.get(
 
 // /login
 router.get("/", checkAccountActive, checkNotAuthenticated, (req, res) => {
+  console.log("Sad times");
   res.status(400).send({ error: "User not logged in" });
 });
 

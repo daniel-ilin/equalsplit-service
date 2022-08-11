@@ -29,10 +29,10 @@
     "passport-local": "^1.0.0",
     "pg": "^8.7.1",
     "rand-token": "^1.0.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
     "eslint": "^8.7.0",
     "nodemon": "^2.0.15"
   }

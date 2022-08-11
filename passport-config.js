@@ -15,7 +15,8 @@ function init(passport, getUserByEmail, getUserById) {
 
       try {
         if (await bcrypt.compare(password, user.password)) {
-          return done(null, user);
+          console.log("Correct password!");
+          return done(null, user);          
         } else {
           return done(null, false, { message: "Password incorrect" });
         }
@@ -26,6 +27,8 @@ function init(passport, getUserByEmail, getUserById) {
   };
 
   passport.use(new localStategy({ usernameField: "email" }, authenticateUser));
+
+  console.log("Authenticated user!");
 
   passport.serializeUser((user, done) => done(null, user.id));
 

@@ -12,7 +12,7 @@ const cors = require("cors");
 var corsOptions = {  
   origin: ["http://localhost:3001", "https://equalsplit.herokuapp.com"],
   optionsSuccessStatus: 200, // For legacy browser support
-  credentials: true,
+  // credentials: true,
 };
 app.use(cors(corsOptions));
 

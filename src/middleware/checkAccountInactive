@@ -1,8 +1,8 @@
 const isUserActive = require("../database/isUserActive");
 
-async function checkAccountInactive(req, res, next) {
+async function checkAccountInactive(req, res, next) {  
   try {
-    let userIsActive = await isUserActive(req.body.email)
+    let userIsActive = await isUserActive(req.body.email);
     if (userIsActive == false) {
       return next();
     } else {

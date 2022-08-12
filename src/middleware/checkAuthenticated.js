@@ -1,8 +1,9 @@
 function checkAuthenticated(req, res, next) {  
-  if (req.isAuthenticated()) {
-    return next();
-  } else {    
+  const refreshToken = req.header("x-auth-token");
+  if (!refreshToken) {
     return res.redirect("/login");
+  } else {
+    return next();
   }
 }
 

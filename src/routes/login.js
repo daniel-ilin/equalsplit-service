@@ -1,12 +1,13 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const passport = require("passport");
+// const passport = require("passport");
 const { getExpirationDate } = require("../../dateSql");
 const { getAccessToken, getRefreshToken } = require("../../jwt");
 const {
   isTokenValid,
   saveRefreshToken,
 } = require("../database/tokenFunctions");
+const authenticateUser = require("../middleware/authenticateUser");
 const checkAccountActive = require("../middleware/checkAccountActive");
 const checkAuthenticated = require("../middleware/checkAuthenticated");
 const checkNotAuthenticated = require("../middleware/checkNotAuthenticated");
@@ -14,21 +15,16 @@ const { checkRefreshToken } = require("../middleware/checkToken");
 const router = express.Router();
 
 router.get("/success", checkAuthenticated, async (req, res) => {
+  console.log("Success called!");
   try {
     const email = req.user.rows[0].email;
     const userid = req.user.rows[0].id;
-
-    console.log("Success achieved!");
-    console.log(`Yout email: ${email}`);
-    console.log(`Yout id: ${userid}`);
 
     if (!userid || !email) {
       res.status(400).send({ error: "Could not find the user" });
     } else {
       const accessToken = getAccessToken(userid, email);
       const refreshToken = getRefreshToken(userid, email);
-      console.log(`Yout accessToken: ${accessToken}`);
-      console.log(`Yout refreshToken: ${refreshToken}`);
       await saveRefreshToken(refreshToken, userid, getExpirationDate());
       res
         .status(200)
@@ -68,18 +64,31 @@ router.get(
 
 // /login
 router.get("/", checkAccountActive, checkNotAuthenticated, (req, res) => {
-  console.log("Sad times");
   res.status(400).send({ error: "User not logged in" });
 });
 
 router.post(
   "/",
-  checkNotAuthenticated,
-  checkAccountActive,
-  passport.authenticate("local", {
-    successRedirect: "/login/success",
-    failureRedirect: "/login",
-  })
+  [checkNotAuthenticated, checkAccountActive, authenticateUser],
+  async (req, res) => {
+    try {
+      const email = req.user.rows[0].email;
+      const userid = req.user.rows[0].id;
+
+      if (!userid || !email) {
+        res.status(400).send({ error: "Could not find the user" });
+      } else {
+        const accessToken = getAccessToken(userid, email);
+        const refreshToken = getRefreshToken(userid, email);
+        await saveRefreshToken(refreshToken, userid, getExpirationDate());
+        res
+          .status(200)
+          .json({ accessToken: accessToken, refreshToken: refreshToken });
+      }
+    } catch {
+      res.status(400).send({ error: "Could not find the user" });
+    }
+  }
 );
 
 module.exports = router;

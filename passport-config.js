@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 
 function init(passport, getUserByEmail, getUserById) {
   const authenticateUser = async (email, password, done) => {
-    console.log("Authenticating user!");
     getUserByEmail(email, async (fetchedUser) => {
       const user = fetchedUser.rows[0];
       if (user == null) {
@@ -14,9 +13,8 @@ function init(passport, getUserByEmail, getUserById) {
       }
 
       try {
-        if (await bcrypt.compare(password, user.password)) {
-          console.log("Correct password!");
-          return done(null, user);          
+        if (await bcrypt.compare(password, user.password)) {                    
+          return done(null, user);
         } else {
           return done(null, false, { message: "Password incorrect" });
         }
@@ -28,11 +26,11 @@ function init(passport, getUserByEmail, getUserById) {
 
   passport.use(new localStategy({ usernameField: "email" }, authenticateUser));
 
-  console.log("Authenticated user!");
+  passport.serializeUser((user, done) => {    
+    done(null, user.id);
+  });
 
-  passport.serializeUser((user, done) => done(null, user.id));
-
-  passport.deserializeUser((id, done) => {
+  passport.deserializeUser((id, done) => {    
     getUserById(id, (user) => {
       done(null, user);
     });

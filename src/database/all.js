@@ -13,8 +13,7 @@ async function getAllData(req, completion) {
   let responseJson = [];
   const userId = req.body.userid;
   const email = req.body.email;
-
-  // console.log(`getAllData - userId = ${userId}`)
+  
   let activeUser = await getUserByEmail(email);
   const sessions = await getSessionsForUser(userId);
   if (!sessions || sessions.length == 0) {

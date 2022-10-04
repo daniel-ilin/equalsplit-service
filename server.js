@@ -10,7 +10,11 @@ app.use(cookieParser());
 
 const cors = require("cors");
 var corsOptions = {
-  origin: ["http://localhost:3001", "https://equalsplit.herokuapp.com"],
+  origin: [
+    "http://localhost:3001",
+    "https://equalsplit.herokuapp.com",
+    "https://equalsplit.vercel.app",
+  ],
   optionsSuccessStatus: 200, // For legacy browser support
   credentials: true,
 };
@@ -35,45 +39,9 @@ const {
 } = require("./src/middleware/checkToken");
 const checkAccountActive = require("./src/middleware/checkAccountActive");
 const checkAccountInactive = require("./src/middleware/checkAccountInactive");
-// const checkAuthenticated = require("./src/middleware/checkAuthenticated");
-
-// initPassport(
-//   passport,
-//   (email, uponUserFetched) =>
-//     db.query(
-//       "SELECT * FROM users WHERE email = ($1);",
-//       [email],
-//       (err, response) => {
-//         uponUserFetched(response);
-//       }
-//     ),
-//   (id, uponUserFetched) =>
-//     db.query("SELECT * FROM users WHERE id = ($1);", [id], (err, response) => {
-//       uponUserFetched(response);
-//     })
-// );
-
 app.set("view-engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
-
-// const session = require("express-session");
-// const MemoryStore = require("memorystore")(session);
-
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET,
-//     store: new MemoryStore({
-//       checkPeriod: 86400000, // prune expired entries every 24h
-//     }),
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { secure: false }, // Remember to set this
-//   })
-// );
-// app.use(passport.initialize());
-// app.use(passport.session());
-
 app.use(bodyParser.json());
 
 app.use(methodOverride("_method"));

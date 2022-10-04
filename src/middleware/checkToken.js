@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
-const { isTokenValid, isResetPasswordTokenValid } = require("../database/tokenFunctions");
+const {
+  isTokenValid,
+  isResetPasswordTokenValid,
+} = require("../database/tokenFunctions");
 
 async function checkAccessToken(req, res, next) {
   const accessToken = req.header("x-auth-token");
@@ -10,7 +13,7 @@ async function checkAccessToken(req, res, next) {
     try {
       const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY);
       req.body.email = user.email;
-      req.body.userid = user.user;      
+      req.body.userid = user.user;
       return next();
     } catch {
       res.status(401).send({ error: "Invalid access token" });
@@ -38,21 +41,28 @@ async function checkRefreshToken(req, res, next) {
 }
 
 async function checkPasswordResetToken(req, res, next) {
-  const passwordResetToken = req.params.token;  
+  const passwordResetToken = req.params.token;
   if (!passwordResetToken) {
     res.status(401).send({ error: "Invalid password reset token" });
-  } else if ((await isResetPasswordTokenValid(passwordResetToken)) === false) {    
+  } else if ((await isResetPasswordTokenValid(passwordResetToken)) === false) {
     res.status(401).send({ error: "Invalid password reset token" });
   } else {
     try {
-      const user = jwt.verify(passwordResetToken, process.env.PASSWORDRESET_TOKEN_KEY);
-      req.body.email = user.email; 
-      req.body.userid = user.user;     
+      const user = jwt.verify(
+        passwordResetToken,
+        process.env.PASSWORDRESET_TOKEN_KEY
+      );
+      req.body.email = user.email;
+      req.body.userid = user.user;
       return next();
-    } catch {      
+    } catch {
       res.status(401).send({ error: "Invalid password reset token" });
     }
   }
 }
 
-module.exports = {checkAccessToken, checkRefreshToken, checkPasswordResetToken};
+module.exports = {
+  checkAccessToken,
+  checkRefreshToken,
+  checkPasswordResetToken,
+};

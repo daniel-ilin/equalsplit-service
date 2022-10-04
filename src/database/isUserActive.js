@@ -6,7 +6,7 @@ async function isUserActive(email) {
     [email]
   );
 
-  if (!isActive.rows[0]) {    
+  if (!isActive.rows[0]) {
     throw new Error("User does not exist");
   }
   return isActive.rows[0].active;

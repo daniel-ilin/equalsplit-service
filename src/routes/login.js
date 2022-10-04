@@ -69,7 +69,7 @@ router.get("/", checkAccountActive, checkNotAuthenticated, (req, res) => {
 
 router.post(
   "/",
-  [checkNotAuthenticated, checkAccountActive, authenticateUser],
+  [checkNotAuthenticated, authenticateUser, checkAccountActive],
   async (req, res) => {
     try {
       const email = req.user.rows[0].email;

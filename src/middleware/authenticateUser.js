@@ -10,19 +10,23 @@ async function authenticateUser(req, res, next) {
       [email],
       async (err, fetchedUser) => {
         const user = fetchedUser.rows[0];
-        if (!user) {
+        if (user === undefined) {
           res.redirect("/login");
+          return;
         }
 
         if (await bcrypt.compare(password, user.password)) {
           db.query(
             "SELECT * FROM users WHERE id = ($1);",
             [user.id],
-            (err, response) => {              
-              req.user = response
+            (err, response) => {
+              console.log(response);
+              req.user = response;
               return next();
             }
           );
+        } else {
+          res.status(400).send({ error: `Incorrect Password` });
         }
       }
     );

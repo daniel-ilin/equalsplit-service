@@ -10,11 +10,7 @@ app.use(cookieParser());
 
 const cors = require("cors");
 var corsOptions = {
-  origin: [
-    "http://localhost:3001",
-    "https://equalsplit.herokuapp.com",
-    "https://equalsplit.vercel.app",
-  ],
+  origin: ["http://localhost:3001", "https://equalsplit.herokuapp.com"],
   optionsSuccessStatus: 200, // For legacy browser support
   credentials: true,
 };
@@ -41,7 +37,7 @@ const bodyParser = require("body-parser");
 // const db = require("./db/index");
 const { initDb } = require("./db/db-config");
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.ISLOCAL === "true") {
   require("dotenv").config();
 }
 

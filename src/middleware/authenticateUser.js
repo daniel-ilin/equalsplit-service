@@ -20,7 +20,6 @@ async function authenticateUser(req, res, next) {
             "SELECT * FROM users WHERE id = ($1);",
             [user.id],
             (err, response) => {
-              console.log(response);
               req.user = response;
               return next();
             }

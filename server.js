@@ -20,6 +20,21 @@ var corsOptions = {
 };
 app.use(cors(corsOptions));
 
+const path = require("path");
+
+app.get("/favicon.ico", (req, res) => {
+  // Use actual relative path to your .ico file here
+  res.sendFile(path.resolve(__dirname, "./favicon.ico"));
+});
+
+app.use(function (req, res, next) {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
+  );
+  next();
+});
+
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
 

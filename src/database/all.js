@@ -13,7 +13,7 @@ async function getAllData(req, completion) {
   let responseJson = [];
   const userId = req.body.userid;
   const email = req.body.email;
-  
+
   let activeUser = await getUserByEmail(email);
   const sessions = await getSessionsForUser(userId);
   if (!sessions || sessions.length == 0) {
@@ -255,10 +255,11 @@ async function getCodeForUserEmail(email) {
   return code.rows[0].code;
 }
 
-async function activateUser(code) {
+async function activateUser(code, email) {
   let queryString =
-    "UPDATE Users SET Active = true WHERE Code = ($1) RETURNING *;";
-  let user = await db.asyncQuery(queryString, [code]);
+    "UPDATE Users SET Active = true WHERE Code = ($1) AND Email = ($2) RETURNING *;";
+  let user = await db.asyncQuery(queryString, [code, email]);
+  if (user.rowCount !== 1) throw new Error("Could not activate the user");
   return user;
 }
 

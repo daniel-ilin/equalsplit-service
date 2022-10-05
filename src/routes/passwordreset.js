@@ -20,7 +20,10 @@ router.get("/:token", checkPasswordResetToken, async (req, res) => {
     if (!token || !email) {
       res.status(400).send("Could not reset the password");
     } else {
-      res.render("passwordreset.ejs", { email: req.body.email, token: token });
+      res.render("passwordreset.ejs", {
+        email: req.body.email,
+        token: token,
+      });
     }
   } catch (error) {
     res.status(400).send(error);
